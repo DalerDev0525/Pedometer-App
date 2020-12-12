@@ -25,7 +25,7 @@ object SensorFilter {
         for (i in array.indices) {
             retval += array[i] * array[i]
         }
-        return Math.sqrt(retval.toDouble()).toFloat()
+        return sqrt(retval.toDouble()).toFloat()
     }
 
     fun dot(a: FloatArray, b: FloatArray): Float {

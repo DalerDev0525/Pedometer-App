@@ -1,8 +1,5 @@
 package com.example.pedometr.step
 
-import com.example.pedometr.MainActivity
-import java.lang.Double.sum
-import java.lang.Float.sum
 
 class StepDetector {
     private val ACCEL_RING_SIZE = 50

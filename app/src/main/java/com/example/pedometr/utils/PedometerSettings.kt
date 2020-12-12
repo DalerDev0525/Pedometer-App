@@ -20,4 +20,19 @@ class PedometerSettings {
             0f
         }
     }
+
+
+
+    fun shouldTellDistance(): Boolean {
+        return (mSettings!!.getBoolean("speak", false)
+                && mSettings!!.getBoolean("tell_distance", false))
+    }
+
+
+
+    fun shouldTellCalories(): Boolean {
+        return (mSettings!!.getBoolean("speak", false)
+                && mSettings!!.getBoolean("tell_calories", false))
+    }
+
 }

@@ -53,6 +53,7 @@ abstract class Distance : StepListener {
 
     private fun notifyListener() {
         mListener!!.valueChanged(mDistance)
+
     }
 
 

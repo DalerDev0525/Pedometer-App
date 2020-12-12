@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener, StepListener {
     private var distance1 = 0
     private var paused = true
     private var timeWhenStopped: Long = 0
+    private var METRIC_RUNNING_FACTOR = 1.02784823
+    private var METRIC_WALKING_FACTOR = 0.708
+    private var mCalories = 0.0
+    var mIsRunning = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener, StepListener {
         chronometer.base = SystemClock.elapsedRealtime()
         chronometer.text = "00:00:00"
         btn.setOnClickListener {
+
             if (paused) {
                 if (tv_stepsTaken.text == "$defaultCount") {
                     btn.text = "Рестарт"
@@ -63,9 +68,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener, StepListener {
             } else {
                 paused = true
                 sensorManager?.unregisterListener(this)
-                distance.text = getDistanceRun(numSteps.toDouble()).toString()
                 chronometer.base = SystemClock.elapsedRealtime()
                 chronometer.stop()
+                distance.text = "0.0"
+                calories.text = "0.0"
                 btn.text = "Старт"
                 tv_stepsTaken.text = "0"
             }
@@ -77,7 +83,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener, StepListener {
         if (event!!.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             simpleStepDetector?.updateAccel(
                 event.timestamp, event.values[0], event.values[1], event.values[2]
-            );
+            )
         }
     }
 
@@ -87,15 +93,32 @@ class MainActivity : AppCompatActivity(), SensorEventListener, StepListener {
     override fun step(timeNs: Long) {
         numSteps++
         tv_stepsTaken.text = ("$numSteps")
-    }
+        mCalories += (70 * numSteps / 1000000.0)
+        val a = "$mCalories".substring(0, 4)
+        calories.text = a
+        distance.text = getDistanceRun(numSteps.toDouble()).toString().substring(0,4)
 
+    }
 
     private fun getDistanceRun(steps: Double): Double {
         return (steps * 78) / 100000.toDouble()
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        sensorManager?.registerListener(
+            this,
+            accel,
+            SensorManager.SENSOR_DELAY_FASTEST
+        )
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager?.unregisterListener(this)
+    }
 
 
 }
